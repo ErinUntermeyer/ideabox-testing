@@ -7,3 +7,7 @@ it('renders without crashing', () => {
   ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
+
+
+// test here that input fields get cleared upon clicking submit
+// test here that you cannot have empty inputs 

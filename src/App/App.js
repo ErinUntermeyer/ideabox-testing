@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Form from '../Form/Form';
 import Ideas from '../Ideas/Ideas'
+import { getIdeas } from '../apiCalls'
 import './App.css';
 
 export default class App extends Component {
@@ -12,8 +13,7 @@ export default class App extends Component {
 	}
 	
 	componentDidMount() {
-		fetch('http://localhost:3001/api/v1/ideas')
-			.then(response => response.json())
+		getIdeas()
 			.then(data => this.setState({ ideas: data }))
 	}
 

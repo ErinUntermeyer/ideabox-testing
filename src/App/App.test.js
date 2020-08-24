@@ -1,6 +1,6 @@
 import React from 'react'
 import App from './App'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { getIdeas } from '../apiCalls'
 jest.mock('../apiCalls.js')
@@ -38,6 +38,7 @@ describe('App', () => {
 
 	})
 
+	//// using findBy
 	it('should display idea cards from server when the app loads', async () => {
 		// set up
 		// mock the API fetch request
@@ -61,28 +62,59 @@ describe('App', () => {
 			]
 		)
 		// render App
-		const { findByRole, findByText } = render(<App />)
+		const { findByRole, findByText, } = render(<App />)
 
 		// execution
 		// locate the container that holds the ideas on the page
-		// assert them to be there
 		const ideasContainer = await findByRole('heading', {name: /ideas component/i})
-		expect(ideasContainer).toBeInTheDocument()
 		
 		// locate the ideas that are on the page
-		// assert them to be there
 		const ideaOne = await findByText(/git lernt/i)
 		const ideaTwo = await findByText(/go to bed plz/i)
 		const ideaThree = await findByText(/because kitties love pets/i)
+		
+		// assertion
+		expect(ideasContainer).toBeInTheDocument()
 		expect(ideaOne).toBeInTheDocument()
 		expect(ideaTwo).toBeInTheDocument()
 		expect(ideaThree).toBeInTheDocument()
-
-		// assertion
-		// done above below each different execution
 	})
 
 })
 
-// test here that input fields get cleared upon clicking submit
-// test here that you cannot have empty inputs 
+//// using waitFor
+it('should display cards from the server when the app loads', async () => {
+	// Render the App component (this component fetches data from an external back-end API)
+	getIdeas.mockResolvedValueOnce(
+		[
+			{
+				"id": 1,
+				"title": "Sweaters for pugs",
+				"description": "To keep them warm"
+			},
+			{
+				"id": 2,
+				"title": "A romcom",
+				"description": "But make it ghosts"
+			},
+			{
+				"id": 3,
+				"title": "A game show called Ether/Or",
+				"description": "When you lose you get chloroformed"
+			}
+		]
+	)     
+	render(<App />)
+	// Check that there is a container element on the page                                      
+	const containerHeading = screen.getByRole('heading', { name: 'Ideas Component' }) 
+	expect(containerHeading).toBeInTheDocument()
+	// Check that there are ideas on the page                                                 
+	const ideaOne = await waitFor(() => screen.getByText('Sweaters for pugs')) 
+	const ideaTwo = await waitFor(() => screen.getByText('A romcom')) 
+	const ideaThree = await waitFor(() => screen.getByText('A game show called Ether/Or')) 
+	
+	expect(ideaOne).toBeInTheDocument()
+	expect(ideaTwo).toBeInTheDocument()
+	expect(ideaThree).toBeInTheDocument()
+	
+})

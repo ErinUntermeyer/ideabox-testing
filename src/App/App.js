@@ -8,13 +8,15 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      ideas: []
+			ideas: [],
+			error: ''
     };
 	}
 	
 	componentDidMount() {
 		getIdeas()
 			.then(data => this.setState({ ideas: data }))
+			.catch(error => this.setState({ error: error }))
 	}
 
   addIdea = newIdea => {
